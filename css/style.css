@@ -18,9 +18,26 @@ body{
     font-size: 48px;
     color: #8AA624;
     margin-bottom: 5px;
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: slideIn 0.8s ease-in forwards;
 }
 
 .comingsoon-container p{
     font-size: 24px;
     color: #8AA624;
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: slideIn 0.8s ease-in forwards;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
