@@ -1,35 +1,104 @@
-body{
+*{
     margin: 0;
     padding: 0;
-    background-color: #DBE4C9;
+    box-sizing: border-box;
 }
 
+body{
+    font-family: Arial, sans-serif;
+    background-color: #fafafa;  /* Light gray, almost white */
+    padding: 200px 20px 0 20px;
+}
 
-.comingsoon-container {
+/* Navbar Styles */
+.navbar-container {
+    display: flex;
+    margin : 0 auto;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 20px;
+    background-color: #ffffff;  /* Pure white */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: fixed;  /* Change from sticky to fixed */
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #920404;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    margin-left: auto;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    font-size: 20px;
+    font-weight: 600;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #920404;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2.5px;
+    bottom: -5px;
+    left: 0;
+    background-color: #920404;
+    transition: width 0.3s ease;
+}
+
+.nav-links a:hover::after{
+    width: 100%;   
+}
+
+/* Home Section */
+.home-section{
+    display: flex;
+    height: 100vh;
+    background: #fff;
+    padding: 0 20px;
+    animation: slideIn 1s ease-out;
+}
+
+.home-section h1{
+    line-height: 1.2;
+    margin-bottom: 5px;
+    font-size : 4rem;
+    font-weight: 900;
+    color: #333;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    text-align: center;
 }
 
-.comingsoon-container h1 {
-    font-size: 48px;
-    color: #8AA624;
-    margin-bottom: 5px;
-    opacity: 0;
-    transform: translateY(-20px);
-    animation: slideIn 0.8s ease-in forwards;
+.highlight{
+    color: #920404;
+    display: inline-block;
+
 }
 
-.comingsoon-container p{
-    font-size: 24px;
-    color: #8AA624;
-    opacity: 0;
-    transform: translateY(-20px);
-    animation: slideIn 0.8s ease-in forwards;
+.home-section p{
+    font-size: 1.2rem;
+    color: #666;
 }
+
+
+
 
 @keyframes slideIn {
     from {
