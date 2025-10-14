@@ -1,5 +1,7 @@
 html {
   scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 * {
@@ -11,6 +13,8 @@ html {
 body {
   font-family: Arial, sans-serif;
   background-color: #fafafa;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 /* Navbar Styles */
@@ -553,8 +557,8 @@ body {
 
 .contact-map iframe {
   width: 600px;
-  height: 450px;
-  border: 6px solid #920404;
+  height: 500px;
+  border: 6px solid #fff;
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
@@ -562,6 +566,9 @@ body {
 .contact-form {
   flex: 1;
   width: 600px;
+  min-height: 500px;
+  height: 500px;
+  box-sizing: border-box;
   background: #fff;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
   border-radius: 16px;
@@ -569,6 +576,9 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .title-contact {
@@ -639,6 +649,11 @@ footer {
 .footer-container img {
   width: 80px;
   height: auto;
+}
+
+.footer-container span {
+  color: #b10a0a;
+  font-weight: 900;
 }
 
 /* Animation untuk progress bar */
@@ -993,4 +1008,9 @@ footer {
   .contact-form button {
     font-size: 1rem;
   }
+}
+
+body::-webkit-scrollbar,
+html::-webkit-scrollbar {
+  display: none;
 }
