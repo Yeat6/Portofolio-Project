@@ -27,12 +27,14 @@ class ProjectController extends BaseController
     public function store($data)
     {
         try {
-            $stmt = $this->pdo->prepare('INSERT INTO projects (name, description, tag, image) VALUES (:name, :description, :tag, :image)');
+            $stmt = $this->pdo->prepare('INSERT INTO projects (name, description, tag, image, link, demo) VALUES (:name, :description, :tag, :image, :link, :demo)');
             $stmt->execute([
                 'name' => $data['name'],
                 'description' => $data['description'],
                 'tag' => $data['tag'],
-                'image' => $data['image']
+                'image' => $data['image'],
+                'link' => $data['link'],
+                'demo' => $data['demo'],
             ]);
             $this->response(['message' => 'Project created successfully'], 201);
         } catch (PDOException $e) {
@@ -43,12 +45,14 @@ class ProjectController extends BaseController
     public function update($data, $id)
     {
         try {
-            $stmt = $this->pdo->prepare('UPDATE projects SET name= :name, description= :description, tag= :tag, image= :image');
+            $stmt = $this->pdo->prepare('UPDATE projects SET name= :name, description= :description, tag= :tag, image= :image, link= :link, demo= :demo');
             $stmt->execute([
                 'name' => $data['name'],
                 'description' => $data['description'],
                 'tag' => $data['tag'],
                 'image' => $data['image'],
+                'link' => $data['link'],
+                'demo' => $data['demo'],
                 'id' => $id,
             ]);
             $this->response(['message' => 'Project Updated Successfully']);
