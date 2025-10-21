@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portfolio Admin Panel</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #fafafa;
+        min-height: 100vh;
+      }
+
+      .container {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 280px;
+        background: linear-gradient(180deg, #920404 0%, #6b0303 100%);
+        color: white;
+        padding: 0;
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        height: 100vh;
+        left: 0;
+        top: 0;
+        overflow-y: auto;
+      }
+
+      .sidebar-header {
+        padding: 30px 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .sidebar-header h1 {
+        font-size: 1.8em;
+        margin-bottom: 5px;
+      }
+
+      .sidebar-header p {
+        font-size: 0.9em;
+        opacity: 0.9;
+      }
+
+      .nav-menu {
+        padding: 20px 0;
+      }
+
+      .nav-item {
+        padding: 18px 25px;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        font-size: 1.05em;
+        font-weight: 500;
+        border-left: 4px solid transparent;
+      }
+
+      .nav-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-left-color: white;
+      }
+
+      .nav-item.active {
+        background: rgba(255, 255, 255, 0.2);
+        border-left-color: white;
+      }
+
+      .nav-item .icon {
+        font-size: 1.3em;
+        width: 30px;
+        text-align: center;
+      }
+
+      /* Main Content */
+      .main-content {
+        flex: 1;
+        margin-left: 280px;
+        padding: 0;
+      }
+
+      .top-bar {
+        background: white;
+        padding: 25px 40px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .top-bar h2 {
+        font-size: 1.8em;
+        color: #2d3748;
+      }
+
+      .content {
+        padding: 30px 40px;
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+        animation: fadeIn 0.5s;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .add-btn {
+        background: linear-gradient(135deg, #920404 0%, #6b0303 100%);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 10px;
+        font-size: 1em;
+        font-weight: 600;
+        cursor: pointer;
+        margin-bottom: 25px;
+        transition: transform 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .add-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(146, 4, 4, 0.4);
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal.active {
+        display: flex;
+      }
+
+      .modal-content {
+        background: white;
+        padding: 35px;
+        border-radius: 15px;
+        width: 90%;
+        max-width: 600px;
+        max-height: 85vh;
+        overflow-y: auto;
+        animation: slideIn 0.3s;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE/Edge */
+      }
+
+      .modal-content::-webkit-scrollbar {
+        display: none; /* Chrome/Safari/Opera */
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: scale(0.9);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      .modal-header {
+        font-size: 1.6em;
+        margin-bottom: 25px;
+        color: #920404;
+        font-weight: 600;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #495057;
+      }
+
+      .form-group input,
+      .form-group textarea {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 1em;
+        transition: border 0.3s;
+      }
+
+      .form-group input:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-color: #920404;
+      }
+
+      .form-group textarea {
+        resize: vertical;
+        min-height: 100px;
+      }
+
+      .form-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 25px;
+      }
+
+      .btn {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1em;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #920404 0%, #6b0303 100%);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(146, 4, 4, 0.4);
+      }
+
+      .btn-secondary {
+        background: #6c757d;
+        color: white;
+      }
+
+      .btn-secondary:hover {
+        background: #5a6268;
+      }
+
+      .card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+      }
+
+      .table-container {
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th {
+        background: #f8f9fa;
+        color: #495057;
+        padding: 18px;
+        text-align: left;
+        font-weight: 600;
+        border-bottom: 2px solid #e9ecef;
+      }
+
+      td {
+        padding: 18px;
+        border-bottom: 1px solid #e9ecef;
+      }
+
+      tr:hover {
+        background: #f8f9fa;
+      }
+
+      .action-btns {
+        display: flex;
+        gap: 10px;
+      }
+
+      .btn-edit,
+      .btn-delete {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.2s;
+        font-size: 0.9em;
+      }
+
+      .btn-edit {
+        background: #ffc107;
+        color: #000;
+      }
+
+      .btn-edit:hover {
+        background: #ffb300;
+        transform: scale(1.05);
+      }
+
+      .btn-delete {
+        background: #dc3545;
+        color: white;
+      }
+
+      .btn-delete:hover {
+        background: #c82333;
+        transform: scale(1.05);
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        color: #6c757d;
+      }
+
+      .empty-state .icon {
+        font-size: 4em;
+        margin-bottom: 20px;
+        opacity: 0.3;
+      }
+
+      .empty-state h3 {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .sidebar {
+          width: 70px;
+        }
+
+        .sidebar-header h1,
+        .sidebar-header p,
+        .nav-item span {
+          display: none;
+        }
+
+        .nav-item {
+          justify-content: center;
+          padding: 18px 0;
+        }
+
+        .main-content {
+          margin-left: 70px;
+        }
+
+        .content {
+          padding: 20px;
+        }
+
+        .top-bar {
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <h1>🎨 Admin</h1>
+          <p>Portfolio Manager</p>
+        </div>
+        <nav class="nav-menu">
+          <div class="nav-item active" onclick="switchTab('projects')">
+            <span class="icon">📁</span>
+            <span>Projects</span>
+          </div>
+          <div class="nav-item" onclick="switchTab('certificates')">
+            <span class="icon">🏆</span>
+            <span>Certificates</span>
+          </div>
+          <div class="nav-item" onclick="switchTab('contacts')">
+            <span class="icon">📧</span>
+            <span>Contacts</span>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <div class="top-bar">
+          <h2 id="page-title">Projects Management</h2>
+        </div>
+
+        <div class="content">
+          <!-- Projects Tab -->
+          <div id="projects" class="tab-content active">
+            <button class="add-btn" onclick="openModal('project')">
+              <span>➕</span>
+              <span>Add New Project</span>
+            </button>
+            <div class="card">
+              <div class="table-container">
+                <table id="projects-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Name</th>
+                      <th>Description</th>
+                      <th>Tag</th>
+                      <th>Link</th>
+                      <th>Demo</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="projects-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Certificates Tab -->
+          <div id="certificates" class="tab-content">
+            <button class="add-btn" onclick="openModal('certificate')">
+              <span>➕</span>
+              <span>Add New Certificate</span>
+            </button>
+            <div class="card">
+              <div class="table-container">
+                <table id="certificates-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Title</th>
+                      <th>Issuer</th>
+                      <th>Issue Date</th>
+                      <th>Expiry Date</th>
+                      <th>URL</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="certificates-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contacts Tab -->
+          <div id="contacts" class="tab-content">
+            <div class="card">
+              <div class="table-container">
+                <table id="contacts-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Message</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="contacts-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Project Modal -->
+    <div id="project-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">Add/Edit Project</div>
+        <form id="project-form">
+          <input type="hidden" id="project-id" />
+          <div class="form-group">
+            <label>Name *</label>
+            <input type="text" id="project-name" required />
+          </div>
+          <div class="form-group">
+            <label>Description *</label>
+            <textarea id="project-description" required></textarea>
+          </div>
+          <div class="form-group">
+            <label>Tags</label>
+            <div
+              id="project-tags-container"
+              style="
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                margin-bottom: 10px;
+                min-height: 35px;
+                padding: 8px;
+                border: 2px solid #e9ecef;
+                border-radius: 8px;
+                background: #f8f9fa;
+              "
+            ></div>
+            <input
+              type="text"
+              id="project-tag-input"
+              placeholder="Type tag and press Enter or comma"
+            />
+          </div>
+          <div class="form-group">
+            <label>Image URL</label>
+            <input type="text" id="project-image" />
+          </div>
+          <div class="form-group">
+            <label>Link</label>
+            <input type="text" id="project-link" />
+          </div>
+          <div class="form-group">
+            <label>Demo URL</label>
+            <input type="text" id="project-demo" />
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              onclick="closeModal('project')"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Certificate Modal -->
+    <div id="certificate-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">Add/Edit Certificate</div>
+        <form id="certificate-form">
+          <input type="hidden" id="certificate-id" />
+          <div class="form-group">
+            <label>Title *</label>
+            <input type="text" id="certificate-title" required />
+          </div>
+          <div class="form-group">
+            <label>Description</label>
+            <textarea id="certificate-description"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Issuer *</label>
+            <input type="text" id="certificate-issuer" required />
+          </div>
+          <div class="form-group">
+            <label>Issue Date</label>
+            <input type="date" id="certificate-issue-date" />
+          </div>
+          <div class="form-group">
+            <label>Expiry Date</label>
+            <input type="date" id="certificate-expiry-date" />
+          </div>
+          <div class="form-group">
+            <label>URL</label>
+            <input type="text" id="certificate-url" />
+          </div>
+          <div class="form-group">
+            <label>Image URL</label>
+            <input type="text" id="certificate-image" />
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              onclick="closeModal('certificate')"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      // Data storage
+      let projects = [];
+      let certificates = [];
+      let contacts = [];
+      let currentProjectTags = [];
+
+      // Initialize
+      loadSampleData();
+
+      // Tag Management
+      function initTagInput() {
+        const tagInput = document.getElementById("project-tag-input");
+
+        tagInput.addEventListener("keydown", function (e) {
+          if (e.key === "Enter" || e.key === ",") {
+            e.preventDefault();
+            addTag(this.value.trim());
+            this.value = "";
+          }
+        });
+
+        tagInput.addEventListener("blur", function () {
+          if (this.value.trim()) {
+            addTag(this.value.trim());
+            this.value = "";
+          }
+        });
+      }
+
+      function addTag(tagText) {
+        if (!tagText || currentProjectTags.includes(tagText)) return;
+
+        currentProjectTags.push(tagText);
+        renderProjectTags();
+      }
+
+      function removeTag(tagText) {
+        currentProjectTags = currentProjectTags.filter(
+          (tag) => tag !== tagText
+        );
+        renderProjectTags();
+      }
+
+      function renderProjectTags() {
+        const container = document.getElementById("project-tags-container");
+        container.innerHTML = "";
+
+        currentProjectTags.forEach((tag) => {
+          const tagEl = document.createElement("span");
+          tagEl.style.cssText =
+            "background:#920404;color:white;padding:6px 12px;border-radius:20px;font-size:0.85em;display:inline-flex;align-items:center;gap:8px;";
+          tagEl.innerHTML = `
+                    ${tag}
+                    <span onclick="removeTag('${tag}')" style="cursor:pointer;font-weight:bold;font-size:1.1em;">&times;</span>
+                `;
+          container.appendChild(tagEl);
+        });
+      }
+
+      // Initialize tag input when page loads
+      setTimeout(initTagInput, 100);
+
+      // Tab switching
+      function switchTab(tab) {
+        document
+          .querySelectorAll(".nav-item")
+          .forEach((t) => t.classList.remove("active"));
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((c) => c.classList.remove("active"));
+        event.target.classList.add("active");
+        document.getElementById(tab).classList.add("active");
+
+        // Update page title
+        const titles = {
+          projects: "Projects Management",
+          certificates: "Certificates Management",
+          contacts: "Contacts Management",
+        };
+        document.getElementById("page-title").textContent = titles[tab];
+      }
+
+      // Modal functions
+      function openModal(type, data = null) {
+        const modal = document.getElementById(`${type}-modal`);
+        modal.classList.add("active");
+
+        if (data) {
+          if (type === "project") {
+            document.getElementById("project-id").value = data.id;
+            document.getElementById("project-name").value = data.name;
+            document.getElementById("project-description").value =
+              data.description;
+            currentProjectTags = Array.isArray(data.tags) ? [...data.tags] : [];
+            renderProjectTags();
+            document.getElementById("project-image").value = data.image;
+            document.getElementById("project-link").value = data.link;
+            document.getElementById("project-demo").value = data.demo;
+          } else if (type === "certificate") {
+            document.getElementById("certificate-id").value = data.id;
+            document.getElementById("certificate-title").value = data.title;
+            document.getElementById("certificate-description").value =
+              data.description;
+            document.getElementById("certificate-issuer").value = data.issuer;
+            document.getElementById("certificate-issue-date").value =
+              data.issue_date;
+            document.getElementById("certificate-expiry-date").value =
+              data.expiry_date;
+            document.getElementById("certificate-url").value = data.url;
+            document.getElementById("certificate-image").value = data.image;
+          }
+        } else {
+          document.getElementById(`${type}-form`).reset();
+          document.getElementById(`${type}-id`).value = "";
+          if (type === "project") {
+            currentProjectTags = [];
+            renderProjectTags();
+          }
+        }
+      }
+
+      function closeModal(type) {
+        document.getElementById(`${type}-modal`).classList.remove("active");
+      }
+
+      // Project functions
+      document
+        .getElementById("project-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const id = document.getElementById("project-id").value;
+          const project = {
+            id: id || Date.now(),
+            name: document.getElementById("project-name").value,
+            description: document.getElementById("project-description").value,
+            tags: [...currentProjectTags],
+            image: document.getElementById("project-image").value,
+            link: document.getElementById("project-link").value,
+            demo: document.getElementById("project-demo").value,
+          };
+
+          if (id) {
+            const index = projects.findIndex((p) => p.id == id);
+            projects[index] = project;
+          } else {
+            projects.push(project);
+          }
+
+          renderProjects();
+          closeModal("project");
+        });
+
+      function renderProjects() {
+        const tbody = document.getElementById("projects-tbody");
+        tbody.innerHTML = "";
+
+        if (projects.length === 0) {
+          tbody.innerHTML =
+            '<tr><td colspan="7"><div class="empty-state"><div class="icon">📁</div><h3>No projects yet</h3><p>Click "Add New Project" to get started</p></div></td></tr>';
+          return;
+        }
+
+        projects.forEach((project) => {
+          const tr = document.createElement("tr");
+          const tagsHtml =
+            Array.isArray(project.tags) && project.tags.length > 0
+              ? project.tags
+                  .map(
+                    (tag) =>
+                      `<span style="background:#920404;color:white;padding:4px 10px;border-radius:15px;font-size:0.8em;display:inline-block;margin:2px">${tag}</span>`
+                  )
+                  .join(" ")
+              : "-";
+
+          tr.innerHTML = `
+                    <td>${project.id}</td>
+                    <td><strong>${project.name}</strong></td>
+                    <td>${project.description.substring(0, 50)}...</td>
+                    <td>${tagsHtml}</td>
+                    <td>${
+                      project.link
+                        ? '<a href="' +
+                          project.link +
+                          '" target="_blank" style="color:#920404">🔗 Link</a>'
+                        : "-"
+                    }</td>
+                    <td>${
+                      project.demo
+                        ? '<a href="' +
+                          project.demo +
+                          '" target="_blank" style="color:#920404">🚀 Demo</a>'
+                        : "-"
+                    }</td>
+                    <td>
+                        <div class="action-btns">
+                            <button class="btn-edit" onclick='editProject(${JSON.stringify(
+                              project
+                            ).replace(/'/g, "&apos;")})'>Edit</button>
+                            <button class="btn-delete" onclick="deleteProject(${
+                              project.id
+                            })">Delete</button>
+                        </div>
+                    </td>
+                `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      function editProject(project) {
+        openModal("project", project);
+      }
+
+      function deleteProject(id) {
+        if (confirm("Are you sure you want to delete this project?")) {
+          projects = projects.filter((p) => p.id != id);
+          renderProjects();
+        }
+      }
+
+      // Certificate functions
+      document
+        .getElementById("certificate-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const id = document.getElementById("certificate-id").value;
+          const certificate = {
+            id: id || Date.now(),
+            title: document.getElementById("certificate-title").value,
+            description: document.getElementById("certificate-description")
+              .value,
+            issuer: document.getElementById("certificate-issuer").value,
+            issue_date: document.getElementById("certificate-issue-date").value,
+            expiry_date: document.getElementById("certificate-expiry-date")
+              .value,
+            url: document.getElementById("certificate-url").value,
+            image: document.getElementById("certificate-image").value,
+          };
+
+          if (id) {
+            const index = certificates.findIndex((c) => c.id == id);
+            certificates[index] = certificate;
+          } else {
+            certificates.push(certificate);
+          }
+
+          renderCertificates();
+          closeModal("certificate");
+        });
+
+      function renderCertificates() {
+        const tbody = document.getElementById("certificates-tbody");
+        tbody.innerHTML = "";
+
+        if (certificates.length === 0) {
+          tbody.innerHTML =
+            '<tr><td colspan="7"><div class="empty-state"><div class="icon">🏆</div><h3>No certificates yet</h3><p>Click "Add New Certificate" to get started</p></div></td></tr>';
+          return;
+        }
+
+        certificates.forEach((cert) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+                    <td>${cert.id}</td>
+                    <td><strong>${cert.title}</strong></td>
+                    <td>${cert.issuer}</td>
+                    <td>${cert.issue_date || "-"}</td>
+                    <td>${cert.expiry_date || "-"}</td>
+                    <td>${
+                      cert.url
+                        ? '<a href="' +
+                          cert.url +
+                          '" target="_blank" style="color:#920404">🔗 View</a>'
+                        : "-"
+                    }</td>
+                    <td>
+                        <div class="action-btns">
+                            <button class="btn-edit" onclick='editCertificate(${JSON.stringify(
+                              cert
+                            )})'>Edit</button>
+                            <button class="btn-delete" onclick="deleteCertificate(${
+                              cert.id
+                            })">Delete</button>
+                        </div>
+                    </td>
+                `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      function editCertificate(cert) {
+        openModal("certificate", cert);
+      }
+
+      function deleteCertificate(id) {
+        if (confirm("Are you sure you want to delete this certificate?")) {
+          certificates = certificates.filter((c) => c.id != id);
+          renderCertificates();
+        }
+      }
+
+      // Contact functions
+      function renderContacts() {
+        const tbody = document.getElementById("contacts-tbody");
+        tbody.innerHTML = "";
+
+        if (contacts.length === 0) {
+          tbody.innerHTML =
+            '<tr><td colspan="5"><div class="empty-state"><div class="icon">📧</div><h3>No messages yet</h3><p>Contact messages will appear here</p></div></td></tr>';
+          return;
+        }
+
+        contacts.forEach((contact) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+                    <td>${contact.id}</td>
+                    <td><strong>${contact.name}</strong></td>
+                    <td>${contact.email}</td>
+                    <td>${contact.message.substring(0, 50)}...</td>
+                    <td>
+                        <div class="action-btns">
+                            <button class="btn-delete" onclick="deleteContact(${
+                              contact.id
+                            })">Delete</button>
+                        </div>
+                    </td>
+                `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      function deleteContact(id) {
+        if (confirm("Are you sure you want to delete this message?")) {
+          contacts = contacts.filter((c) => c.id != id);
+          renderContacts();
+        }
+      }
+
+      // Load sample data
+      function loadSampleData() {
+        projects = [
+          {
+            id: 1,
+            name: "E-Commerce Website",
+            description:
+              "Full-stack e-commerce platform with payment integration and user authentication",
+            tags: ["Web Development", "React", "Node.js"],
+            image: "https://via.placeholder.com/300",
+            link: "https://github.com/user/project1",
+            demo: "https://demo.example.com",
+          },
+          {
+            id: 2,
+            name: "Mobile App",
+            description: "React Native mobile application for task management",
+            tags: ["Mobile", "React Native", "Firebase"],
+            image: "https://via.placeholder.com/300",
+            link: "https://github.com/user/project2",
+            demo: "",
+          },
+        ];
+
+        certificates = [
+          {
+            id: 1,
+            title: "AWS Certified Developer",
+            description: "AWS Cloud Development certification",
+            issuer: "Amazon Web Services",
+            issue_date: "2024-01-15",
+            expiry_date: "2027-01-15",
+            url: "https://aws.amazon.com/certification",
+            image: "https://via.placeholder.com/200",
+          },
+          {
+            id: 2,
+            title: "Full Stack Developer",
+            description: "Complete full stack web development course",
+            issuer: "Udemy",
+            issue_date: "2023-06-20",
+            expiry_date: "",
+            url: "https://udemy.com",
+            image: "https://via.placeholder.com/200",
+          },
+        ];
+
+        contacts = [
+          {
+            id: 1,
+            name: "John Doe",
+            email: "john@example.com",
+            message:
+              "I'm interested in working with you on a project. Please contact me back when you have time.",
+          },
+          {
+            id: 2,
+            name: "Jane Smith",
+            email: "jane@example.com",
+            message:
+              "Great portfolio! I'd like to discuss potential collaboration opportunities.",
+          },
+        ];
+
+        renderProjects();
+        renderCertificates();
+        renderContacts();
+      }
+
+      // Close modal when clicking outside
+      window.onclick = function (event) {
+        if (event.target.classList.contains("modal")) {
+          event.target.classList.remove("active");
+        }
+      };
+    </script>
+  </body>
+</html>
